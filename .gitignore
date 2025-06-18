@@ -1,0 +1,11 @@
+.env
+
+/data/processed/train_data_nb.csv
+/data/processed/test_data_nb.csv
+
+/ml/model
+/ml/plots
+
+/notebooks
+
+/api

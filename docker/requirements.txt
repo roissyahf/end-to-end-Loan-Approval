@@ -1,0 +1,16 @@
+dagshub==0.5.10
+Flask==3.1.1
+joblib==1.5.1
+matplotlib==3.10.3
+mlflow==2.19.0
+mlflow_skinny==2.19.0
+numpy==2.3.0
+pandas==2.3.0
+prometheus_client==0.22.0
+psutil==7.0.0
+python-dotenv==1.1.0
+Requests==2.32.4
+scikit_learn==1.7.0
+streamlit==1.45.1
+seaborn==0.13.2
+xgboost==3.0.2

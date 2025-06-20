@@ -7,10 +7,10 @@ on:
 env:
   REGISTRY: docker.io
   USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+  DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
+  DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
 
 jobs:
-
-  ### 1. Build & Push MLflow Model Docker Image
   build-push-mlmodel:
     runs-on: ubuntu-latest
 
@@ -26,10 +26,22 @@ jobs:
       - name: Install MLflow
         run: pip install mlflow
 
-      - name: Build MLflow Docker Image from Local Artifacts
+      - name: Authenticate to Dagshub
+        run: |
+          echo "machine dagshub.com login $DAGSHUB_USERNAME password $DAGSHUB_TOKEN" > ~/.netrc
+
+      - name: Verify model can be loaded from registry
+        run: |
+          python -c "
+            import mlflow
+            mlflow.set_tracking_uri('https://dagshub.com/${{ secrets.DAGSHUB_USERNAME }}/Loan_Approval_Model.mlflow')
+            mlflow.pyfunc.load_model('models:/revamp-loan-approval-model/Production')
+            print('Model loaded successfully.')"
+
+      - name: Build MLflow Docker Image from Registry
         run: |
           mlflow models build-docker \
-            --model-uri ./ml/downloaded_artifacts/model \
+            --model-uri "models:/revamp-loan-approval-model/Production" \
             --name revamp-loan-approval
 
       - name: Log in to Docker Hub
@@ -42,6 +54,7 @@ jobs:
         run: |
           docker tag revamp-loan-approval $REGISTRY/$USERNAME/loan-mlmodel:latest
           docker push $REGISTRY/$USERNAME/loan-mlmodel:latest
+
 
   ### 2. Build & Push API + Streamlit
   build-push-ui-api:

@@ -40,24 +40,9 @@ jobs:
           MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
           MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
           MLFLOW_EXPERIMENT_NAME: ${{ secrets.MLFLOW_EXPERIMENT_NAME }}
+          MLFLOW_RUN_ID: ${{ secrets.MLFLOW_RUN_ID }}
         run: |
-          export MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
-          export MLFLOW_TRACKING_USERNAME=$MLFLOW_TRACKING_USERNAME
-          export MLFLOW_TRACKING_PASSWORD=$MLFLOW_TRACKING_PASSWORD
-
-          echo "Authenticating to Dagshub MLflow at $MLFLOW_TRACKING_URI"
-    
-          EXP_ID=$(mlflow experiments list | grep "$MLFLOW_EXPERIMENT_NAME" | awk '{print $1}')
-          echo "Experiment ID: $EXP_ID"
-
-          mlflow runs list --experiment-id "$EXP_ID" > run_list.txt
-
-          cat run_list.txt  # for debugging
-
-          RUN_ID=$(tail -n +2 run_list.txt | head -n 1 | awk '{print $1}')
-          echo "Latest RUN_ID: $RUN_ID"
-    
-          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+          echo "run_id=${{ secrets.MLFLOW_RUN_ID }}" >> $GITHUB_OUTPUT
 
       - name: Build Docker Model
         run: |

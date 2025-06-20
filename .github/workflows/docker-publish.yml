@@ -44,11 +44,13 @@ jobs:
         run: |
           echo "run_id=${{ secrets.MLFLOW_RUN_ID }}" >> $GITHUB_OUTPUT
 
-      - name: Build Docker Model
+      - name: Download MLflow Model Artifacts
         run: |
-          echo "RUN_ID: ${{ steps.get_run.outputs.run_id }}"
-          mlflow models build-docker --model-uri "runs:/${{ steps.get_run.outputs.run_id }}/model" --name "revamp-loan-approval"
+          mlflow artifacts download -u "runs:/${{ steps.get_run.outputs.run_id }}/model" -d ./downloaded_model
 
+      - name: Build Docker Image from Local Model
+        run: |
+          mlflow models build-docker --model-uri ./downloaded_model --name revamp-loan-approval
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2

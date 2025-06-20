@@ -5,5 +5,7 @@
 
 /ml/model
 /ml/plots
+/ml/download-artifacts.py
+/ml/downloaded_artifacts
 
 /notebooks

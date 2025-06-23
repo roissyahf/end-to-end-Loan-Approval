@@ -1,4 +1,4 @@
-name: Build and Push Docker Images
+name: Build and Push Docker Images (ML)
 
 on:
   push:
@@ -33,7 +33,7 @@ jobs:
 
       - name: Verify model can be loaded from registry
         run: |
-          echo "..." > verify-model-registry.py
+          python verify-model-registry.py
 
       - name: Build MLflow Docker Image from Registry
         env:

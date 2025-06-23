@@ -25,7 +25,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install MLflow
-        run: pip install mlflow
+        run: pip install mlflow os python-dotenv
 
       - name: Authenticate to Dagshub
         run: |

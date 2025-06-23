@@ -1,4 +1,5 @@
 import mlflow
+from mlflow.exceptions import MlflowException
 import os
 from dotenv import load_dotenv
 
@@ -13,6 +14,9 @@ client = mlflow.MlflowClient()
 model_target = client.get_registered_model(name="revamp-loan-approval-model")
 print(f"Registered Models: {model_target}")
 
-# Try loading the specific version
-model = mlflow.pyfunc.load_model("models:/revamp-loan-approval-model/Production")
-print("Model loaded successfully.")
+try:
+    model = mlflow.pyfunc.load_model('models:/revamp-loan-approval-model/Production')
+    print('✅ Model loaded successfully.')
+except MlflowException as e:
+    print('❌ Failed to load model from registry:', e)
+    exit(1)

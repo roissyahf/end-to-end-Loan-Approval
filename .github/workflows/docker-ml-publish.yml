@@ -1,4 +1,4 @@
-name: Build and Push Docker Images (ML)
+name: Build and Push ML Docker Images
 
 on:
   push:

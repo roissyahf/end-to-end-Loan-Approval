@@ -6,6 +6,12 @@ COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy Streamlit app
+COPY ../../streamlit_app ./streamlit_app
+
+# Set working directory to streamlit_app
+WORKDIR /app/streamlit_app
+
 EXPOSE 8501
 
 ENV PYTHONUNBUFFERED=1 \

@@ -9,5 +9,6 @@
 /ml/download-artifacts.py
 /ml/downloaded_artifacts
 /ml/regist-model.py
+/ml/verify-model-registry.py
 
 /notebooks

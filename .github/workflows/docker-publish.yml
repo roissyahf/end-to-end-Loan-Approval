@@ -70,7 +70,6 @@ jobs:
           docker tag revamp-loan-approval $REGISTRY/$USERNAME/loan-mlmodel:latest
           docker push $REGISTRY/$USERNAME/loan-mlmodel:latest
 
-jobs:
   build-push-ui-api:
     needs: build-push-mlmodel  # wait for model container to be built
     runs-on: ubuntu-latest

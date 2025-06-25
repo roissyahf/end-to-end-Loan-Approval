@@ -32,19 +32,32 @@ jobs:
         run: |
           echo "DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}" > .env
 
-      - name: Run Docker Compose
-        run: |
-          docker-compose up -d
+      - name: Start Docker Compose services
+        run: docker-compose -f docker-compose.yml up -d
 
-      - name: Show Running Containers
+      - name: Wait for services to be healthy
         run: |
-          docker ps
+          for service in streamlit api prometheus grafana; do
+            echo "Waiting for $service to become healthy..."
+            for i in {1..30}; do
+              status=$(docker inspect --format='{{json .State.Health.Status}}' $(docker-compose ps -q $service))
+              echo "$service status: $status"
+              if [ "$status" == '"healthy"' ]; then
+                echo "$service is healthy."
+                break
+              fi
+              if [ $i -eq 30 ]; then
+                echo "$service failed to become healthy. Dumping logs:"
+                docker-compose logs $service
+                exit 1
+              fi
+              sleep 5
+            done
+          done
 
-      - name: Wait and Test API
-        run: |
-          sleep 20
-          curl -f http://localhost:8000/docs || exit 1
+      - name: List running containers
+        run: docker ps -a
 
-      - name: Streamlit Health Check
-        run: |
-          curl -f http://localhost:8501 || exit 1
+      - name: Dump Docker Compose logs
+        if: always()
+        run: docker-compose logs
